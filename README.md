@@ -4,7 +4,7 @@
 
 ### Motivation
 
-I really enjoy to travel. I am approaching visiting 49 states in the United States and have been to many major cities in the US and in Europe. I aspire to visit  I wonder how I can use the cities I know and love in order to find where to travel next and where to go when visiting a new city.
+I really enjoy to travel. I am approaching visiting 49 states in the United States and have been to many major cities in the US and in Europe. I aspire to visit all places around the world but I wonder how I can use the cities I know and love in order to find where to travel next and where to go when visiting a new city.
 
 ### Goal
 
