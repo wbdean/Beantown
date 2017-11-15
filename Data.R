@@ -95,8 +95,12 @@ for (i in 1:length(Neighborhoods)) {
 rm(tw)
 save(Tweets, file = "Tweets.Rda")
 
+## Instagram ------------------------------
 
-
+require(httr)
+full_url <- oauth_callback()
+full_url <- gsub("(.*localhost:[0-9]{1,5}/).*", x=full_url, replacement="\\1")
+print(full_url)
 
 
 # Emoji
