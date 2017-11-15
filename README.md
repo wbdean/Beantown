@@ -21,6 +21,10 @@ The **goal of this project** is to use data from areas and neighborhoods of citi
 
 The [Airbnb Datasets](http://insideairbnb.com/get-the-data.html) provide insight into many cities in the United States and other countries and can be used to find areas where residents and housing are similar in by various standards. 
 
+### Twitter 
+
+Use Twitter API to get info about neighborhoods. 
+
 ### Yelp
 
-With the [Yelp Dataset](https://www.yelp.com/dataset), information about the business in certain areas to assess the culture of a neighborhood.
+With the [Yelp Dataset](https://www.yelp.com/dataset), information about the business in certain areas to assess the culture of a neighborhood. There doesn't seem to be info for both Boston and Chicago so this may not be an option.
