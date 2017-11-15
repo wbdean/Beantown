@@ -28,8 +28,6 @@ for (i in 1:23) {
 }
 save(BOSTON, file = "Boston.Rda")
 rm(boston)
-bostonreview <- read.csv("boston/reviews.csv")
-bostonlisting <- read.csv("boston/listings.csv")
 
 ## Cambridge
 CAMBRIDGE <- NULL
@@ -59,15 +57,8 @@ for (i in 1:26) {
 }
 save(CHICAGO, file = "Chicago.Rda")
 rm(chicago)
-chicagolisting <- read.csv("chicago/listings.csv")
-chicagoreview <- read.csv("chicago/reviews.csv")
 
 # Twitter
-api_key <- 	"fLCFgbH2yvU8vHybOdWAv0XMc"
-api_secret <- "Peby2JPXTuqi4qIgKch23Ib1numHSp8zmd6tGETbDAVOy5SStm"
-access_token <- "1906041992-1ZoB2PCP45I3hUBciFeu0M4qInVn6dH9qCCMBH3"
-access_token_secret <- "hXHtRoOwQS8UFDcGlJu8i51p9rEWuj54HINZJsQ6NpSlZ"
-
 setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
 rm(api_key, api_secret, access_token, access_token_secret, i, path)
 
@@ -95,6 +86,12 @@ for (i in 1:length(Neighborhoods)) {
 rm(tw)
 save(Tweets, file = "Tweets.Rda")
 
+
+
+
+
+
+### Work in Progress --------------------------------------
 ## Instagram ------------------------------
 
 require(httr)
@@ -104,7 +101,7 @@ print(full_url)
 
 
 # Emoji
-Tweets$text <- iconv(Tweets$text, from = "latin1", to = "ascii", sub = "byte")
+
 
 
 
