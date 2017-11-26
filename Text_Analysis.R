@@ -25,41 +25,6 @@ load("Chicago.Rda")
 load("Cambridge.Rda")
 load("Tweets.Rda")
 
-## Text --------------------------------------------
-
-totSent <- function(text) {
-    text = as.character(text)
-    review = sentimentr::sentiment_by(text)
-    reviews = reviews %>% 
-        mutate(Sent = ifelse(sentiment > 0, "Positive", 
-                             ifelse(sentiment < 0, "Negative", 
-                                    "Neutral")))
-    return(review)
-}
-
-sentSent <- function(text) {
-    reviews = sentimentr::sentiment(text)
-    reviews = reviews %>% 
-        mutate(Sent = ifelse(sentiment > 0, "Positive", 
-                             ifelse(sentiment < 0, "Negative", 
-                                    "Neutral")))
-    return(reviews)
-}
-
-SentSpread <- function(x) {
-    x = x %>% 
-        group_by(element_id, Sent) %>% 
-        summarise(n = n()) %>% 
-        spread(Sent, n, fill = 0)
-    return(x)
-}
-
-bindSent <- function(df, sent) {
-    df = cbind("element_id" = 1:nrow(df), df)
-    df.sent = left_join(df, sent, by = "element_id")
-    return(df.sent)
-}
-
 
 # Tweets.sent 
 Tweets.sent <- sentSent(Tweets$text)
@@ -86,6 +51,12 @@ blisting.sent.spread <- bindSent(bostonlisting,
 
 
 
+### Analysis
+
+Tweets.analysis <- Tweets.sent %>% 
+    group_by(city, neighborhood, Sent) %>%
+    summarise(n = n()) %>% 
+    mutate(n2 = sum(n), prop = n / n2) %>% ungroup()
 
 
 
@@ -94,14 +65,3 @@ blisting.sent.spread <- bindSent(bostonlisting,
 
 
 
-
-
-
-Tweets <- cbind("id" = 1:nrow(Tweets), Tweets)
-Tweets.sent <- left_join(reviews, Tweets %>% select(id, neighborhood, city), 
-                         by = c("element_id" = "id"))
-Tweets.sent <- Tweets.sent %>% 
-    mutate(Sent = ifelse(sentiment > 0, "Positive", 
-                         ifelse(sentiment < 0, "Negative", 
-                                "Neutral")))
-Sent.Neigh <- Tweets.sent %>% group_by(city, neighborhood, Sent) %>% summarize(n = n())
