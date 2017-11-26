@@ -3,9 +3,15 @@
 
 library(plyr)
 library(tm)
+library(tidytext)
 library(stringr)
 library(NLP)
+library(sentimentr)
+library(ggplot2)
+library(tidyr)
+library(dplyr)
 options(stringsAsFactors = FALSE)
+source("sentiment.R")
 
 ## Load Data --------------------
 
@@ -19,28 +25,83 @@ load("Chicago.Rda")
 load("Cambridge.Rda")
 load("Tweets.Rda")
 
-# Positive and Negative
-pos <- read.table("sentiment/positive-words.txt")$V1
-neg <- read.table("sentiment/negative-words.txt")$V1
-
 ## Text --------------------------------------------
 
-ascii <- function(x) {
-    # Convert text to ascii characters only
-    iconv(x, from = "latin1", to = "ascii", sub = "byte") 
+totSent <- function(text) {
+    text = as.character(text)
+    review = sentimentr::sentiment_by(text)
+    reviews = reviews %>% 
+        mutate(Sent = ifelse(sentiment > 0, "Positive", 
+                             ifelse(sentiment < 0, "Negative", 
+                                    "Neutral")))
+    return(review)
 }
 
-reviews <- bostonreview$comments
-reviews <- ascii(reviews)
-reviews <- removeWords(reviews, words = stopwords())
-reviews <- removePunctuation(reviews)
-reviews <- removeNumbers(reviews)
-reviews <- stripWhitespace(reviews)
-review <- Corpus(VectorSource(reviews))
-review <- tm_map(review, tolower)
-review.tdm <- TermDocumentMatrix(review)
-review.tdm <- removeSparseTerms(review.tdm, .95)
-re.d <- t(data.matrix(review.tdm))
-re.df <- as.data.frame(re.d, 
-                       stringsAsFactors = FALSE)
-str(review.tdm)
+sentSent <- function(text) {
+    reviews = sentimentr::sentiment(text)
+    reviews = reviews %>% 
+        mutate(Sent = ifelse(sentiment > 0, "Positive", 
+                             ifelse(sentiment < 0, "Negative", 
+                                    "Neutral")))
+    return(reviews)
+}
+
+SentSpread <- function(x) {
+    x = x %>% 
+        group_by(element_id, Sent) %>% 
+        summarise(n = n()) %>% 
+        spread(Sent, n, fill = 0)
+    return(x)
+}
+
+bindSent <- function(df, sent) {
+    df = cbind("element_id" = 1:nrow(df), df)
+    df.sent = left_join(df, sent, by = "element_id")
+    return(df.sent)
+}
+
+
+# Tweets.sent 
+Tweets.sent <- sentSent(Tweets$text)
+Tweets.sent <- bindSent(Tweets, Tweets.sent)
+Tweets.sent.spread <- bindSent(Tweets, SentSpread(Tweets.sent))
+
+# Airbnb
+# Reviews
+sample <- 1:1000
+bostonreview.samp <- bostonreview[sample, ]
+Boston.sent <- sentSent(bostonreview.samp$comments)
+Boston.sent <- bindSent(bostonreview.samp, Boston.sent)
+Boston.sent.spread <- bindSent(bostonreview.samp, 
+                               SentSpread(Boston.sent))
+
+# Listings
+blisting.sent <- sentSent(bostonlisting$neighborhood_overview)
+blisting.sent <- bindSent(bostonlisting, blisting.sent)
+blisting.sent.spread <- bindSent(bostonlisting, 
+                                 SentSpread(blisting.sent))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Tweets <- cbind("id" = 1:nrow(Tweets), Tweets)
+Tweets.sent <- left_join(reviews, Tweets %>% select(id, neighborhood, city), 
+                         by = c("element_id" = "id"))
+Tweets.sent <- Tweets.sent %>% 
+    mutate(Sent = ifelse(sentiment > 0, "Positive", 
+                         ifelse(sentiment < 0, "Negative", 
+                                "Neutral")))
+Sent.Neigh <- Tweets.sent %>% group_by(city, neighborhood, Sent) %>% summarize(n = n())
