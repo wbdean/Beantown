@@ -59,6 +59,7 @@ save(CHICAGO, file = "Chicago.Rda")
 rm(chicago)
 
 # Twitter
+source("API.R")
 setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
 rm(api_key, api_secret, access_token, access_token_secret, i, path)
 
