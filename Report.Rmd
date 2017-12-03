@@ -6,7 +6,12 @@ output: pdf_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+library(ggplot2)
+library(tidytext)
+library(dplyr)
+library(ggmap)
+library(topicmodels)
+source("Figures.R")
 ```
 
 # Overview
@@ -47,10 +52,73 @@ Twitter data gives insight to what is going on within a neighborhood, and what p
 
 I ended looking at the Boston data mainly and also using data from Chicago. There were a few limitations with the Airbnb data from chicago where only the house listing was provided. With it, there was no information about the host, or the reviews themselves from the people who stayed there. 
 
-
 # Boston
 
-# Comparison
+## People from each Neighborhood
+
+### Hosts
+
+Looking at the host information wrote about themselves 
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+load("BHost.tfidf.Rda")
+load("BHost.2.Rda")
+BHost.lda <- BHost.2 %>% 
+    cast_dtm(neighbourhood, text, n) %>% 
+    LDA(k = 10) %>% 
+    tidy(matrix = "gamma") %>% 
+    group_by(document) %>% 
+    top_n(1, gamma)
+ggplot(left_join(BHost.lda,boston.map, by = c("document" = "Name"))) + 
+    geom_polygon(aes(Long, Lat, fill = factor(topic), group = document), color = "black") + theme_nothing()
+```
+
+### People's Reviews
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+load("BReview.2.Rda")
+BReview.lda <- BHost.2 %>% 
+    cast_dtm(neighbourhood, text, n) %>% 
+    LDA(k = 10) %>% 
+    tidy(matrix = "gamma") %>% 
+    group_by(document) %>% 
+    top_n(1, gamma)
+ggplot(left_join(BReview.lda,boston.map, by = c("document" = "Name"))) + 
+    geom_polygon(aes(Long, Lat, fill = factor(topic), group = document), color = "black") + theme_nothing()
+```
+
+## Boston Neighborhoods
+
+
+### Neighborhood Descriptions
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+load("BNeigh.2.Rda")
+BNeigh.lda <- BNeigh.2 %>% 
+    cast_dtm(neighbourhood, text, n) %>% 
+    LDA(k = 10) %>% 
+    tidy(matrix = "gamma") %>% 
+    group_by(document) %>% 
+    top_n(1, gamma)
+ggplot(left_join(BNeigh.lda,boston.map, by = c("document" = "Name"))) + 
+    geom_polygon(aes(Long, Lat, fill = factor(topic), group = document), color = "black") + theme_nothing()
+```
+
+### Housing
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+load("BHouse.2.Rda")
+BHouse.lda <- BHouse.2 %>% 
+    cast_dtm(neighbourhood, text, n) %>% 
+    LDA(k = 10) %>% 
+    tidy(matrix = "gamma") %>% 
+    group_by(document) %>% 
+    top_n(1, gamma)
+ggplot(left_join(BHouse.lda,boston.map, by = c("document" = "Name"))) + 
+    geom_polygon(aes(Long, Lat, fill = factor(topic), group = document), color = "black") + theme_nothing(tit)
+```
+
+# Comparison of Boston and Chicago
 
 # Conclusion
 

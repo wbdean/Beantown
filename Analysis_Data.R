@@ -40,6 +40,7 @@ BNeigh <- bostonlisting %>%
 BNeigh.tfidf <- Get_tfidf(BNeigh)
 BNeigh.tfidf <- Get_sent(BNeigh.tfidf)
 BNeigh.2 <- bind_sent(BNeigh.tfidf)
+save(BNeigh.2, file = "BNeigh.2.Rda")
 
 
 # Host Overview. Info about each host
@@ -49,7 +50,8 @@ BHost <- bostonlisting %>%
 BHost.tfidf <- Get_tfidf(BHost)
 BHost.tfidf <- Get_sent(BHost.tfidf)
 BHost.2 <- bind_sent(BHost.tfidf)
-
+save(BHost.tfidf, file = "BHost.tfidf.Rda")
+save(BHost.2, file = "BHost.2.Rda")
 
 # Reviews for each neighbourhood
 BReview <- left_join(bostonreview %>% 
@@ -62,6 +64,7 @@ BReview <- BReview[sample(1:nrow(BReview), 10000), ]
 BReview.tfidf <- Get_tfidf(BReview)
 BReview.tfidf <- Get_sent(BReview.tfidf)
 BReview.2 <- bind_sent(BReview.tfidf)
+save(BReview.2, file = "BReview.2.Rda")
 
 
 # House Info Listing
@@ -73,6 +76,7 @@ BHouse <- bostonlisting %>%
 BHouse.tfidf <- Get_tfidf(BHouse)
 BHouse.tfidf <- Get_sent(BHouse.tfidf)
 BHouse.2 <- bind_sent(BHouse.tfidf)
+save(BHouse.2, file = "BHouse.2.Rda")
 
 ## Comparisons ------------------------------
 
@@ -99,3 +103,5 @@ Tweets.2 <- Tweets %>%
     Get_tfidf() %>% 
     Get_sent() %>% 
     bind_sent()
+
+
