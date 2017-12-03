@@ -12,6 +12,7 @@ library(dplyr)
 library(ggmap)
 library(topicmodels)
 source("Figures.R")
+set.seed(201)
 ```
 
 # Overview
@@ -52,20 +53,39 @@ Twitter data gives insight to what is going on within a neighborhood, and what p
 
 I ended looking at the Boston data mainly and also using data from Chicago. There were a few limitations with the Airbnb data from chicago where only the house listing was provided. With it, there was no information about the host, or the reviews themselves from the people who stayed there. 
 
+
+### Methods
+
+Doing the analysis, I mainly used a bag of words approach to the text analysis. For a neighborhood's set of reviews, I collected all the defining words for a given neighborhood as well as important sets of two words for a neighborhood.
+
+When comparing two or more neighborhoods to each other, I used latent Dirichlet allocation (LDA) to group into a set of $k$ topics. 
+
 # Boston
 
 ## People from each Neighborhood
 
 ### Hosts
 
-Looking at the host information wrote about themselves 
+Each Airbnb Host provides a description of themself and their household. Using the methods stated above, I grouped terms from each neighborhood. This process appeared to catch terms associated with people and aspects of their lives. Consider the words choosen for Brighton, MA below:
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+```{r, echo = FALSE, message = FALSE, warning=FALSE, fig.align='center', fig.height=4, fig.width=4}
 load("BHost.tfidf.Rda")
 load("BHost.2.Rda")
+knitr::kable(BHost.tfidf$bigram %>% 
+                 filter(neighbourhood == "Brighton") %>% 
+                 select(bigram) %>% head(5), col.names = "Brighton Neighborhood Bigrams")
+```
+
+The third row in context of it's host description is: "Lorin works as an *accountant downtown* and takes the expressway bus which is a quick 20 minute ride."
+
+Doing this for all of the neighborhoods, and grouping all 25 Boston neighborhoods into 15, we see the following result: 
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align='center', fig.height=4, fig.width=4}
+
 BHost.lda <- BHost.2 %>% 
     cast_dtm(neighbourhood, text, n) %>% 
-    LDA(k = 10) %>% 
+    LDA(k = 10, control = list(seed = 2)) %>% 
     tidy(matrix = "gamma") %>% 
     group_by(document) %>% 
     top_n(1, gamma)
@@ -73,13 +93,18 @@ ggplot(left_join(BHost.lda,boston.map, by = c("document" = "Name"))) +
     geom_polygon(aes(Long, Lat, fill = factor(topic), group = document), color = "black") + theme_nothing()
 ```
 
+Regions of the same color (same grouping) appear either next to each other or are in similar proximity to downtown. This seems likely with people living outside of downtown and commuting into the city.
+
+
 ### People's Reviews
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+Considering all the reviews of the Airbnbs for the neighborhoods of Boston and which area's reviews are most similar, we see the results below:
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align='center', fig.height=4, fig.width=4}
 load("BReview.2.Rda")
 BReview.lda <- BHost.2 %>% 
     cast_dtm(neighbourhood, text, n) %>% 
-    LDA(k = 10) %>% 
+    LDA(k = 10, control = list(seed = 2)) %>% 
     tidy(matrix = "gamma") %>% 
     group_by(document) %>% 
     top_n(1, gamma)
@@ -87,16 +112,19 @@ ggplot(left_join(BReview.lda,boston.map, by = c("document" = "Name"))) +
     geom_polygon(aes(Long, Lat, fill = factor(topic), group = document), color = "black") + theme_nothing()
 ```
 
-## Boston Neighborhoods
+The contents of what people are saying into their reviews seems to depend on what neighborhood they are staying. Again, many neighborhoods far from the heart of Boston look to be grouped together, and as the neighborhoods get closer, there appear to stay grouped together. Southie and East Boston group together, the Fenway area, and JP Neighborhoods.
 
+## Boston Neighborhoods
 
 ### Neighborhood Descriptions
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+Every Airbnb host provides a description of the neighborhood where their property. From the results, we see that many of the adjacent neighborhoods in Boston are grouped together. For example, Downtown and Seaport are grouped together, but Southie is grouped by itself.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align='center', fig.height=4, fig.width=4}
 load("BNeigh.2.Rda")
 BNeigh.lda <- BNeigh.2 %>% 
     cast_dtm(neighbourhood, text, n) %>% 
-    LDA(k = 10) %>% 
+    LDA(k = 10, control = list(seed = 1)) %>% 
     tidy(matrix = "gamma") %>% 
     group_by(document) %>% 
     top_n(1, gamma)
@@ -106,11 +134,13 @@ ggplot(left_join(BNeigh.lda,boston.map, by = c("document" = "Name"))) +
 
 ### Housing
 
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+Using each Airbnb listing's detailed description of the property, we gain information about the type of homes in each location. 
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align='center', fig.height=4, fig.width=4}
 load("BHouse.2.Rda")
 BHouse.lda <- BHouse.2 %>% 
     cast_dtm(neighbourhood, text, n) %>% 
-    LDA(k = 10) %>% 
+    LDA(k = 10, control = list(seed = 5)) %>% 
     tidy(matrix = "gamma") %>% 
     group_by(document) %>% 
     top_n(1, gamma)
@@ -118,9 +148,106 @@ ggplot(left_join(BHouse.lda,boston.map, by = c("document" = "Name"))) +
     geom_polygon(aes(Long, Lat, fill = factor(topic), group = document), color = "black") + theme_nothing(tit)
 ```
 
+### Culture
+
+Looking at tweets associated with each neighborhood either through direct mention or in a hashtag, we can pick up on what people in each area are talking about. The tweets were sample during the week of November, 30th. Here are the clusters:
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align='center', fig.height=4, fig.width=4}
+load("BTweets.2.Rda")
+BTweets.lda <- BTweets.2 %>% 
+    cast_dtm(neighbourhood, text, n) %>% 
+    LDA(k = 10, control = list(seed = 2)) %>% 
+    tidy(matrix = "gamma") %>% 
+    group_by(document) %>% 
+    top_n(1, gamma)
+ggplot(left_join(BTweets.lda,boston.map, by = c("document" = "Name"))) + 
+    geom_polygon(aes(Long, Lat, fill = factor(topic), group = document), color = "black") + theme_nothing(tit)
+```
+
+
+
 # Comparison of Boston and Chicago
 
+After looking at Boston, let's consider how another city's neighborhoods compare to the ones we just explored.
+
+There are some limitations as stated before with the data from Chicago. We will only compare the tweets from both cities and the names of the Airbnb lisings. 
+
+## Tweets
+
+This data will help understand which neighborhoods in Boston are talking about similiar topics as the neighborhoods in Chicago. Using LDA with 25 topics for all 25 Boston neighborhoods, we can check if any of of the Boston neighborhoods match with neighborhoods in Chicago, or if the neighborhoods in Boston are completely different than Chicago.
+
+Below are the areas in Chicago that are similar to Downtown Boston based of the twitter data. The projected similar locations in Chicago are in fact close to the downtown area of Chicago as well.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE, fig.align='center', fig.height=4, fig.width=4}
+load("Tweets.2.Rda")
+bostonneighborhoods <- boston.map$Name %>% 
+    as.factor() %>%
+    levels()
+Tweets.lda <- Tweets.2 %>% 
+    cast_dtm(neighbourhood, text, n) %>% 
+    LDA(k = 25, control = list(seed = 6)) %>% 
+    tidy(matrix = "gamma") %>% 
+    group_by(document) %>% 
+    top_n(1, gamma)
+Tweets.lda <- Tweets.lda %>% 
+    mutate(city = ifelse(document %in% bostonneighborhoods, 
+                         "Boston", "Chicago"))
+knitr::kable(Tweets.lda %>% 
+                 filter(topic == 2) %>% 
+                 select(city, document) %>% 
+                 arrange(city), 
+             col.names = c("City", "Neighborhood"))
+
+ggplot(chicago.map, 
+       aes(Long, Lat, fill = Name_ID %in% c(96, 58, 5), 
+           group = Name)) +
+    geom_polygon(color = "black") + theme_nothing()
+    
+```
+
+
+
+## Description of Houses
+
+The Airbnb information for Chicago is quite limited however, comparing the listing names for the properties in Boston and Chicago give the following results.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+load("Home.Rda")
+Home.lda <- Home %>% 
+    cast_dtm(neighbourhood, text, n) %>% 
+    LDA(k = 25, control = list(seed = 5)) %>% 
+    tidy(matrix = "gamma") %>% 
+    group_by(document) %>% 
+    top_n(1, gamma)
+Home.lda <- Home.lda %>% 
+    mutate(city = ifelse(document %in% bostonneighborhoods, 
+                         "Boston", "Chicago"))
+Home.tbl <- Home.lda %>%
+    group_by(topic) %>% 
+    summarise(n = sum(city == "Boston") / n())
+names(Home.tbl) <- c("Grouping", "% Boston Neighborhood")
+Home.tbl <- bind_cols(Home.tbl[1:12, ], 
+                      Home.tbl[-c(1:12), ])
+knitr::kable(Home.tbl)
+```
+
+Using property listing names to represent the type of homes in an area may be a stretch, but it does group neighborhoods in Boston with neighborhoods in Chicago.
+
 # Conclusion
+
+The neighborhoods in Boston have a interesting relationship with each other and are similiar in as many ways as they are different. 
+
+## Next Steps 
+
+Even though I was able to shed light behind the questions I had starting this project, I think this is just one approach to the question. Continuing on, I would like to see what other data I could use to expand on this and maybe separate each neighborhood into further classifications. 
+
+## What I Learned
+
+With this project, this was the first time where I used only text data to answer questions. I got very familiar with the packages in R for text mining, mainly `tidytext`, `tm`, and `topicmodels`.  
+
+
+
+
 
 
 
