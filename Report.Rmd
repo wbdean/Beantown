@@ -35,5 +35,7 @@ I wanted data that would reflect all these measure. Here are a few sources I fou
 
 ### Airbnb
 
-The [Airbnb Datasets](http://insideairbnb.com/get-the-data.html) provides insight into many cities in the US and around the world. 
+The [Airbnb Datasets](http://insideairbnb.com/get-the-data.html) provides insight into many cities in the US and around the world. Not only are there reviews written by people who use the service, but also the listings have information about the neighborhood, the house, and the host.
+
+
 
