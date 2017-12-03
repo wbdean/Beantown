@@ -1,0 +1,39 @@
+---
+title: "An Analysis of Boston Neighborhoods"
+author: "William Dean"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+# Overview
+
+## Motivation
+
+I really enjoy to travel especially visiting new cities around the world. I currently live in Boston, MA and have become very familiar with the area.
+
+In a few of my most recent travels, I have found difficulty exploring bigger cities. When spending a few days in a certain city, I often end up spending a lot of time traveling within the city, not having enough time to connect with the people and the cultures.
+
+## Goal
+
+The *goal of this project* is to use data from areas and neighborhoods of cities to see how communities compare to others within the same city and also to others in different. 
+
+When looking each neighborhood, there a few things that I am interested in measuring:
+
+- What are the people like? How are the people that live in the area and what do people who visit think of the area and their time there.
+
+- What are the living situations like? What kind of houses are in the area.
+
+- What is the culture like? What are these communities known for and what are people talking about?
+
+## Data
+
+I wanted data that would reflect all these measure. Here are a few sources I found.
+
+### Airbnb
+
+The [Airbnb Datasets](http://insideairbnb.com/get-the-data.html) provides insight into many cities in the US and around the world. 
+
