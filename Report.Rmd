@@ -235,7 +235,7 @@ Using property listing names to represent the type of homes in an area may be a 
 
 # Conclusion
 
-The neighborhoods in Boston have a interesting relationship with each other and are similiar in as many ways as they are different. 
+The neighborhoods in Boston have a interesting relationship with each other and are similiar in as many ways as they are different. Having the Boston downtown area map to Chicago's downtown seems like this method is indeed looking at similiar areas. 
 
 ## Next Steps 
 
