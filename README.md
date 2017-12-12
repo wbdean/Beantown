@@ -33,4 +33,4 @@ With the [Yelp Dataset](https://www.yelp.com/dataset), information about the bus
 
 ## Final Report
 
-Check out the [Final Report] in my 
+Check out the [Final Report Here](https://github.com/wbdean/Beantown/blob/master/Report.pdf) !
