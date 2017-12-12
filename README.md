@@ -31,6 +31,6 @@ Use Twitter API to get info about neighborhoods.
 
 With the [Yelp Dataset](https://www.yelp.com/dataset), information about the business in certain areas to assess the culture of a neighborhood. There doesn't seem to be info for both Boston and Chicago so this may not be an option.
 
-## Final Report
+## Final Report and Results
 
 Check out the [Final Report Here](https://github.com/wbdean/Beantown/blob/master/Report.pdf) !
