@@ -4,7 +4,7 @@
 
 ### Motivation
 
-I really enjoy to travel. I am approaching visiting 49 states in the United States and have been to many major cities in the US and in Europe. I aspire to visit all places around the world but I wonder how I can use the cities I know and love in order to find where to travel next and where to go when visiting a new city.
+I am currently living in Boston, MA, but plan on relocating next year to Chicago. I have visited a few times but, from the large size in comparison to Boston, I have found it difficult to grasp which areas in Chicago I would enjoy let alone want to live. In general, in my recent travels, I have found difficulty exploring bigger cities. When spending a few days in a certain city, I often end up spending a lot of time traveling within the city, not having enough time to connect with the people and the cultures.
 
 ### Goal
 
@@ -30,3 +30,7 @@ Use Twitter API to get info about neighborhoods.
 ### Yelp
 
 With the [Yelp Dataset](https://www.yelp.com/dataset), information about the business in certain areas to assess the culture of a neighborhood. There doesn't seem to be info for both Boston and Chicago so this may not be an option.
+
+## Final Report
+
+Check out the [Final Report] in my 
