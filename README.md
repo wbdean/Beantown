@@ -14,6 +14,8 @@ The **goal of this project** is to use data from areas and neighborhoods of citi
 * How do living situations compare.
 * How similar is the the culture. i.e. Food, restaurants, entertainment, etc.
 
+The question I want to answer with this project is: **What neighborhoods in Chicago are similar to the neighborhood I currently live in Boston?** That is, if I were to relocate to Chicago from Boston, what areas would I like based on my current location.
+
 
 ## Data
 
